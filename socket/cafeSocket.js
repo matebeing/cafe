@@ -1,12 +1,24 @@
-var showdown  = require('showdown'),
-    converter = new showdown.Converter();
-
 const jwt = require('jsonwebtoken');
 const User = require('../model/User')
 
 var discussions = []
 var topicId = -1;
 
+
+function markdownToHTML(md)
+{
+    return md
+        .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>") // **Bold**
+        .replace(/__(.+?)__/g, "<u>$1</u>") // __Underline__
+        .replace(/\*(.+?)\*/g, "<i>$1</i>") // *Italic*
+        .replace(/_(.+?)_/g, "<i>$1</i>") // _Italic_
+        .replace(/(^|\n)> ?(.*)/g, "$1<font size='10' color='#5f779D'>$2</font>") // > Quote
+        .replace(/!\[(.+?)\]\((.+?)\)/g, "<img src=\"$1\" title=\"$2\"/>") // ![Image description](URL)
+        .replace(/  +/g, ' ') // Removes unnecessary spaces ('          '=' ')
+        .replace(/\n +/g, '\n') // ^
+        .replace(/^ +| +$/g, ''). // ^
+        .replace(/\n/g, "<br />"); // Break line to <br>
+}
 
 module.exports = (io) => {
     const cafeSocket = io.of('/cafe');
@@ -34,7 +46,7 @@ module.exports = (io) => {
             if(isValid) {
                 topicId++
                 const user = await User.findOne({_id: data.userId});
-                discussions.push({id: topicId, title: data.topic.title, owner: user.username, avatar: user.avatar, content: [{content: converter.makeHtml(data.topic.content[0].content.replace(/\n/g, "<br />")), owner: user.username, avatar: user.avatar, colorName: user.colorName}], lastComment: data.topic.lastComment, date: data.topic.date})
+                discussions.push({id: topicId, title: data.topic.title, owner: user.username, avatar: user.avatar, content: [{content: markdownToHTML(data.topic.content[0].content), owner: user.username, avatar: user.avatar, colorName: user.colorName}], lastComment: data.topic.lastComment, date: data.topic.date})
                 cafeSocket.emit("updateDiscussions", discussions)
                 socket.emit("openTopic", discussions[topicId])
             } 
@@ -47,13 +59,10 @@ module.exports = (io) => {
         socket.on("newComment", async (data) => {
             const user = await User.findOne({_id: data.owner});
             discussions[data.topicId].lastComment = new Date()
-            discussions[data.topicId].content.push({content: converter.makeHtml(data.content.replace(/\n/g, "<br />")), owner: user.username, avatar: user.avatar, colorName: user.colorName})
+            discussions[data.topicId].content.push({content: markdownToHTML(data.content), owner: user.username, avatar: user.avatar, colorName: user.colorName})
             socket.emit("openTopic", discussions[data.topicId])
             cafeSocket.emit("updateDiscussions", discussions)
         })
     });
-
-
-
 }
 
