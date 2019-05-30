@@ -16,7 +16,7 @@ function markdownToHTML(md)
         .replace(/!\[(.+?)\]\((.+?)\)/g, "<img src=\"$1\" title=\"$2\"/>") // ![Image description](URL)
         .replace(/  +/g, ' ') // Removes unnecessary spaces ('          '=' ')
         .replace(/\n +/g, '\n') // ^
-        .replace(/^ +| +$/g, ''). // ^
+        .replace(/^ +| +$/g, '') // ^
         .replace(/\n/g, "<br />"); // Break line to <br>
 }
 
