@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{page_title}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>  <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+  <script src="https://cdn.jsdelivr.net/npm/autosize@4.0.2/dist/autosize.min.js"></script>
+  <link rel="stylesheet" type="text/css" media="screen" href="../a801colors.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="../a801input.css">
+</head>
+<body>
+  <div class="setting">
+    <ul>
+      <li class="color-BL"><a>Configurações</a></li>
+      <li class="color-R"><a id="btn-exit" class="color-R" href="/">Sair</a></li>
+    </ul>
+  </div>
+  <div class="app color-N">
+
+    <!-- Cafe discussions -->   
+    <div class="discussions" id="discussions">
+
+        <div class="btn-newElement" id="btn-newTopic">Create a new topic</div>
+    </div>
+
+    <!-- Cafe topic screen -->
+    <div class="render" id="render">
+    </div>
+
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
