@@ -12,11 +12,8 @@ function markdownToHTML(md)
         .replace(/__(.+?)__/g, "<u>$1</u>") // __Underline__
         .replace(/\*(.+?)\*/g, "<i>$1</i>") // *Italic*
         .replace(/_(.+?)_/g, "<i>$1</i>") // _Italic_
-        .replace(/(^|\n)> ?(.*)/g, "$1<font size='10' color='#5f779D'>$2</font>") // > Quote
+        .replace(/^> ?(.*)/gm, "<font size='10' color='#5f779D'>$1</font>") // > Quote
         .replace(/!\[(.+?)\]\((.+?)\)/g, "<img src=\"$1\" title=\"$2\"/>") // ![Image description](URL)
-        .replace(/  +/g, ' ') // Removes unnecessary spaces ('          '=' ')
-        .replace(/\n +/g, '\n') // ^
-        .replace(/^ +| +$/g, '') // ^
         .replace(/\n/g, "<br />"); // Break line to <br>
 }
 
