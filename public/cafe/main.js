@@ -12,7 +12,7 @@ loadScripts.forEach(element => {
     });    
 });
 
-socket.emit("validUser", localStorage.getItem("token"))
+socket.emit("validUser", {userId: localStorage.getItem("userId"), token: localStorage.getItem("token")})
 
 socket.on("validUser", (data) => {
     if(!data) window.location.href = "/"

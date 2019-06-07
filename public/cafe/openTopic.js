@@ -1,3 +1,19 @@
+function markdownToHTML(md)
+{
+    return md
+        .replace(/</g, '&lt;')
+        .replace(/\*\*(.+?)\*\*/g, "<b style='font-weight: 800'>$1</b>") // **Bold**
+        .replace(/__(.+?)__/g, "<u>$1</u>") // __Underline__
+        .replace(/\*(.+?)\*/g, "<i>$1</i>") // *Italic*
+        .replace(/_(.+?)_/g, "<i>$1</i>") // _Italic_
+        .replace(/(^|\n)> ?(.*)/g, "$1<span style='margin-left: 20px; font-size: 9px; color: #5f779D'>$2</span>") // > Quote
+        .replace(/!\[(.+?)\]\((.+?)\)/g, "<img src=\"$1\" title=\"$2\"/>") // ![Image description](URL)
+        .replace(/  +/g, ' ') // Removes unnecessary spaces ('          '=' ')
+        .replace(/\n +/g, '\n') // ^
+        .replace(/^ +| +$/g, '') // ^
+        .replace(/\n/g, "<br />"); // Break line to <br>
+}
+
 socket.on("openTopic", (data) => {
     element = document.getElementById("render-topicScreen");
     parentNode = document.getElementById("render");
@@ -13,6 +29,7 @@ socket.on("openTopic", (data) => {
     topic.id = "topic"
     
     data.content.forEach(element => {
+        console.log(element)
         var comment = document.createElement("div");
         comment.id = "topicComment";
 
@@ -22,17 +39,31 @@ socket.on("openTopic", (data) => {
         comment.appendChild(avatar)
 
         var info = document.createElement("table")
-        var userName = document.createElement("tr")
-        userName.innerHTML = `<span style="color: ${element.colorName}">${element.owner}</span>`
-        info.appendChild(userName)
+        var userName = document.createElement("div")
+        userName.innerHTML = `<span style="margin-left: 7px; color: ${element.colorName}">${element.owner}</span><span style="margin-right: 5px; float: right; color: #6C77C1;">${element.date}</spans>`
+        comment.appendChild(userName)
 
         var content = document.createElement("tr")
-        content.innerHTML = element.content
+        content.innerHTML = markdownToHTML(element.content)
         info.appendChild(content)
 
         comment.appendChild(info)
 
         topic.appendChild(comment)
+
+        avatar.addEventListener("click", (event) => {
+          if (document.getElementById('popup')) document.getElementById('popup').parentNode.removeChild(document.getElementById('popup'));
+            // console.log({topicId: data.id, id: element.id})
+            var popup = document.createElement("div")
+            popup.className = "popup";
+            popup.id = "popup";
+            popup.innerHTML = `
+                    <button onclick="quote({topicID: ${element.topicID}, id: ${element.id}})" class="color-N" style="width: 100%; background-color: #22464d; font-size: 10px">Quote</button>
+                            `
+            popup.style.top = event.clientY + 'px';
+            popup.style.left = event.clientX + 'px';
+            comment.appendChild(popup)
+        })
     });
     
     var topicContent = document.createElement("textarea"); 
@@ -61,4 +92,27 @@ socket.on("openTopic", (data) => {
         $('#topic').scrollTop($('#topic')[0].scrollHeight)
         console.log("mudou")
     });
+})
+
+function quote(data) {
+    document.getElementById('popup').parentNode.removeChild(document.getElementById('popup'))
+    socket.emit("getContent", data)
+}
+
+socket.on("quote", data => {
+    document.getElementById('input-topicComment2').style.height = '200px';
+    document.getElementById('input-topicComment2').value = `>@${data.owner}\n` + data.content.replace(/(^|\n)(.*)/g, "$1> $2")
+})
+
+document.addEventListener('click', function(e) {
+    e = e || window.event;
+    var target = e.target || e.srcElement;
+    if (target.id == "topicComment" || target.id == "input-topicComment2" || target.id == "btn-newElement2") {
+        if (document.getElementById('popup')) document.getElementById('popup').parentNode.removeChild(document.getElementById('popup'))
+    }
+}, false);
+
+
+socket.on('alert', (data) => {
+    alert(data)
 })

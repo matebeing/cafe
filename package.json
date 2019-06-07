@@ -4,7 +4,7 @@
   "description": "A tiny forum",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "Mate",
   "license": "ISC",
@@ -22,7 +22,7 @@
     "showdown": "^1.9.0",
     "socket.io": "^2.2.0"
   },
-   "engines": {
+  "engines": {
     "node": "10.x"
   }
 }
