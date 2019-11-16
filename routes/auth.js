@@ -13,14 +13,33 @@ const schema = {
 };
 
 
+/* Server - Nickname filter */
+function filterNickname(str)
+{
+    return str.replace(/</g, '').replace(/>/g, '')
+    .replace(/'/g, '')
+    .replace(/\//g, '').replace(/\\/g, '')
+    .replace(/\((.+?)\)/g, '')
+    .replace(/;/g, '').replace(/\./g, '')
+    .replace(/\*/g, "")
+    .replace(/(^|\n)> ?(.*)/g, "")
+    .replace(/!\[(.+?)\]\((.+?)\)/g, "")
+    .replace(/ +/g, '')
+    .replace(/\n +/g, '')
+    .replace(/^ +| +$/g, '')
+    .replace(/\n/g, "");
+}
+
+
+
 router.post('/register', async (req,res) => {
     console.log(req.body)
     // Validate user data
-    const {error} = Joi.validate({username: req.body.username, password: req.body.password, avatar: req.body.avatar}, schema)
+    const {error} = Joi.validate({username: filterNickname(req.body.username), password: req.body.password, avatar: req.body.avatar}, schema)
     if (error) return res.status(400).send(error.details[0].message)
 
     // Check if the user exists
-    const userExist = await User.findOne({username: req.body.username});
+    const userExist = await User.findOne({username: filterNickname(req.body.username)});
     if (userExist) return res.status(400).send("Username is already in use")
 
     // Check if image is valid
@@ -33,7 +52,7 @@ router.post('/register', async (req,res) => {
 
     // Create user
     const user = new User({
-        username: req.body.username,
+        username: filterNickname(req.body.username),
         password: hashedPassword,
         avatar: req.body.avatar,
         colorName: randomColor(),
@@ -53,11 +72,11 @@ router.post('/register', async (req,res) => {
 
 router.post('/login', async (req, res) => {
     // Validate user data
-    const {error} = Joi.validate({username: req.body.username, password: req.body.password}, schema)
+    const {error} = Joi.validate({username: filterNickname(req.body.username), password: req.body.password}, schema)
     if (error) return res.status(400).send(error.details[0].message)
 
     // Check if the user exists
-    const user = await User.findOne({username: req.body.username});
+    const user = await User.findOne({username: filterNickname(req.body.username)});
     if (!user) return res.status(400).send("User doesn't exist")
 
     // Check if the password is correct
