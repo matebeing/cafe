@@ -8,7 +8,6 @@ We were improving our knowledge with pure html, css and javascript.
 
 ## Environment
 DB_CONNECT = \<YOUR MONGODB CONNECTION URL>\
-GOOGLE_SECRET = \<YOUR GOOGLE CAPTCHA SECRET KEY>\
 TOKEN_SECRET = \<YOUR SECRET KEY TO GENERATE LOGIN TOKEN>\
 TIMEZONE = \<YOUR TIMEZONE> (ex: America/Sao_Paulo)
 
