@@ -1,4 +1,8 @@
-# tfmcafe
+<p align="center">
+  <img src="https://i.imgur.com/IOidD6w.png">
+</p>
+
+## About
 A replica of Transformice's Cafe
 
 ## Note
@@ -13,6 +17,6 @@ TIMEZONE = \<YOUR TIMEZONE> (ex: America/Sao_Paulo)
 
 ## Collaborators
 * **Marcos André** - [Useems](https://github.com/Useems)
-* **Matheus S** - [Grrmate](https://github.com/grrmate)
+* **Matheus S** - [Grrmate](https://github.com/matebeing)
 
 
